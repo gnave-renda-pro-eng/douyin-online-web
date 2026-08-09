@@ -12,4 +12,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD ["gunicorn", "-w", "1", "--threads", "4", "--timeout", "300", "--graceful-timeout", "30", "-b", "0.0.0.0:3000", "enhanced:app"]
+CMD ["gunicorn", "-w", "1", "--threads", "4", "--timeout", "300", "--graceful-timeout", "30", "-b", "0.0.0.0:3000", "ai_key_check:app"]
