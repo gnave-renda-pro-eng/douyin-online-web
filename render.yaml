@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: douyin-online-web
+    runtime: docker
+    plan: free
+    autoDeploy: true
