@@ -6,7 +6,7 @@
 <title>抖音视频在线提取</title>
 <style>
 :root{color-scheme:dark;--bg:#07090f;--panel:#121722;--panel2:#0c111a;--line:#293244;--text:#f7f9ff;--muted:#8f9bad;--accent:#49e6ff;--danger:#ff6b86;--ok:#76efad}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#101827 0,#07090f 45%);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;min-height:100vh;padding:36px 18px}.wrap{max-width:920px;margin:auto}.hero{margin-bottom:22px}.hero h1{font-size:clamp(30px,5vw,52px);margin:0 0 10px;letter-spacing:-1.5px}.hero p{margin:0;color:var(--muted);font-size:16px}.panel{background:rgba(18,23,34,.92);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:24px;box-shadow:0 24px 80px rgba(0,0,0,.35)}textarea{width:100%;min-height:150px;resize:vertical;border:1px solid var(--line);background:var(--panel2);color:#fff;border-radius:16px;padding:17px;font-size:15px;line-height:1.65;outline:none}textarea:focus{border-color:#4fd9ee;box-shadow:0 0 0 3px rgba(73,230,255,.09)}.actions{display:flex;gap:12px;align-items:center;margin-top:14px;flex-wrap:wrap}button,.btn{border:0;border-radius:14px;padding:13px 20px;font-weight:800;font-size:14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}.primary{background:linear-gradient(135deg,#49e6ff,#8af3ff);color:#031016;box-shadow:0 9px 26px rgba(73,230,255,.18)}button:disabled{opacity:.55;cursor:not-allowed}.secondary{background:#182130;color:#dfe8f5;border:1px solid #2c394d}.status{margin-top:18px;border-radius:16px;padding:14px 16px;background:#0d131d;border:1px solid #222d3d;color:#aab6c8;display:none}.status.show{display:block}.status.error{border-color:rgba(255,107,134,.38);color:#ff9daf;background:rgba(255,77,113,.07)}.status.ok{border-color:rgba(118,239,173,.35);color:#a9f7c9;background:rgba(80,220,140,.07)}.progress{height:7px;background:#172131;border-radius:999px;overflow:hidden;margin-top:12px}.bar{height:100%;width:12%;background:linear-gradient(90deg,#49e6ff,#9ef4ff);border-radius:inherit;transition:width .35s ease}.result{margin-top:18px;display:none}.result.show{display:grid;grid-template-columns:220px 1fr;gap:20px;padding-top:18px;border-top:1px solid rgba(255,255,255,.08)}.cover{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:18px;background:#0a0f17;border:1px solid #253144}.meta h2{margin:0 0 10px;font-size:21px;line-height:1.45}.meta p{margin:7px 0;color:var(--muted)}.badge{display:inline-flex;padding:5px 9px;border-radius:999px;background:#0b2026;color:#82efff;border:1px solid #15434b;font-size:12px;margin-right:7px}.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}.small{font-size:12px;color:#718096;margin-top:14px}.tips{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.tip{padding:15px;border:1px solid rgba(255,255,255,.07);border-radius:16px;background:rgba(10,14,21,.65);color:#9ca9bc;font-size:13px;line-height:1.6}.tip strong{display:block;color:#edf6ff;margin-bottom:4px}.dot{width:8px;height:8px;border-radius:50%;background:#526174;display:inline-block;margin-right:7px}.dot.online{background:#69eaa5;box-shadow:0 0 12px rgba(105,234,165,.7)}@media(max-width:720px){body{padding:24px 12px}.panel{padding:18px}.result.show{grid-template-columns:1fr}.cover{max-width:260px}.tips{grid-template-columns:1fr}}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#101827 0,#07090f 45%);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;min-height:100vh;padding:36px 18px}.wrap{max-width:920px;margin:auto}.hero{margin-bottom:22px}.hero h1{font-size:clamp(30px,5vw,52px);margin:0 0 10px;letter-spacing:-1.5px}.hero p{margin:0;color:var(--muted);font-size:16px}.panel{background:rgba(18,23,34,.92);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:24px;box-shadow:0 24px 80px rgba(0,0,0,.35)}textarea{width:100%;min-height:150px;resize:vertical;border:1px solid var(--line);background:var(--panel2);color:#fff;border-radius:16px;padding:17px;font-size:15px;line-height:1.65;outline:none}textarea:focus{border-color:#4fd9ee;box-shadow:0 0 0 3px rgba(73,230,255,.09)}.actions{display:flex;gap:12px;align-items:center;margin-top:14px;flex-wrap:wrap}button,.btn{border:0;border-radius:14px;padding:13px 20px;font-weight:800;font-size:14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}.primary{background:linear-gradient(135deg,#49e6ff,#8af3ff);color:#031016;box-shadow:0 9px 26px rgba(73,230,255,.18)}button:disabled{opacity:.55;cursor:not-allowed}.secondary{background:#182130;color:#dfe8f5;border:1px solid #2c394d}.status{margin-top:18px;border-radius:16px;padding:14px 16px;background:#0d131d;border:1px solid #222d3d;color:#aab6c8;display:none}.status.show{display:block}.status.error{border-color:rgba(255,107,134,.38);color:#ff9daf;background:rgba(255,77,113,.07)}.status.ok{border-color:rgba(118,239,173,.35);color:#a9f7c9;background:rgba(80,220,140,.07)}.progress{height:7px;background:#172131;border-radius:999px;overflow:hidden;margin-top:12px}.bar{height:100%;width:12%;background:linear-gradient(90deg,#49e6ff,#9ef4ff);border-radius:inherit;transition:width .35s ease}.result{margin-top:18px;display:none}.result.show{display:grid;grid-template-columns:220px 1fr;gap:20px;padding-top:18px;border-top:1px solid rgba(255,255,255,.08)}.cover{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:18px;background:#0a0f17;border:1px solid #253144}.meta h2{margin:0 0 10px;font-size:21px;line-height:1.45}.meta p{margin:7px 0;color:var(--muted)}.badge{display:inline-flex;padding:5px 9px;border-radius:999px;background:#0b2026;color:#82efff;border:1px solid #15434b;font-size:12px;margin-right:7px}.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}.small{font-size:12px;color:#718096;margin-top:14px}.tips{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.tip{padding:15px;border:1px solid rgba(255,255,255,.07);border-radius:16px;background:rgba(10,14,21,.65);color:#9ca9bc;font-size:13px;line-height:1.6}.tip strong{display:block;color:#edf6ff;margin-bottom:4px}.dot{width:8px;height:8px;border-radius:50%;background:#526174;display:inline-block;margin-right:7px}.dot.online{background:#69eaa5;box-shadow:0 0 12px rgba(105,234,165,.7)}.dot.warn{background:#ffd36a;box-shadow:0 0 12px rgba(255,211,106,.45)}@media(max-width:720px){body{padding:24px 12px}.panel{padding:18px}.result.show{grid-template-columns:1fr}.cover{max-width:260px}.tips{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -76,18 +76,9 @@ function validHttpUrl(value){
 }
 function startProgress(){
   let step=0;
-  const stages=[
-    ['正在识别分享链接…',20],
-    ['正在请求抖音页面…',38],
-    ['正在获取视频信息…',58],
-    ['正在选择可访问的视频地址…',76],
-    ['正在完成解析…',88]
-  ];
+  const stages=[['正在识别分享链接…',20],['正在请求抖音页面…',38],['正在获取视频信息…',58],['正在选择可访问的视频地址…',76],['正在完成解析…',88]];
   setStatus(stages[0][0],'normal',stages[0][1]);
-  progressTimer=setInterval(()=>{
-    step=Math.min(step+1,stages.length-1);
-    setStatus(stages[step][0],'normal',stages[step][1]);
-  },1800);
+  progressTimer=setInterval(()=>{step=Math.min(step+1,stages.length-1);setStatus(stages[step][0],'normal',stages[step][1]);},1800);
 }
 function stopProgress(){ if(progressTimer){clearInterval(progressTimer);progressTimer=null;} }
 
@@ -95,7 +86,11 @@ async function checkHealth(){
   try{
     const r=await fetch('/api/health',{cache:'no-store'});
     const j=await r.json();
-    if(j.ok){health.innerHTML='<span class="dot online"></span>服务在线 · '+(j.version||'');return;}
+    if(j.ok){
+      if(j.cookie_configured) health.innerHTML='<span class="dot online"></span>服务在线 · '+(j.version||'')+' · Cookie 已配置';
+      else health.innerHTML='<span class="dot warn"></span>服务在线 · '+(j.version||'')+' · Cookie 未配置';
+      return;
+    }
   }catch{}
   health.innerHTML='<span class="dot"></span>服务暂不可用';
 }
@@ -103,54 +98,28 @@ async function checkHealth(){
 async function go(){
   const text=txt.value.trim();
   if(!text){ setStatus('请先粘贴抖音分享文案或链接。','error',100); return; }
-  parseBtn.disabled=true;
-  parseBtn.textContent='正在提取…';
-  hideResult();
-  startProgress();
-  const controller=new AbortController();
-  const timer=setTimeout(()=>controller.abort(),35000);
-  const started=performance.now();
+  parseBtn.disabled=true;parseBtn.textContent='正在提取…';hideResult();startProgress();
+  const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),35000);const started=performance.now();
   try{
     const r=await fetch('/api/parse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text}),signal:controller.signal});
-    const raw=await r.text();
-    let j;
-    try{j=JSON.parse(raw)}catch{throw new Error('服务器返回了非 JSON 数据，请稍后重试。')}
+    const raw=await r.text();let j;try{j=JSON.parse(raw)}catch{throw new Error('服务器返回了非 JSON 数据，请稍后重试。')}
     if(!r.ok || !j.ok) throw new Error(j.error||'解析失败');
-
-    const videoUrl=validHttpUrl(j.url);
-    const pageUrl=validHttpUrl(j.webpage_url);
-    const coverUrl=validHttpUrl(j.cover);
+    const videoUrl=validHttpUrl(j.url),pageUrl=validHttpUrl(j.webpage_url),coverUrl=validHttpUrl(j.cover);
     if(!videoUrl) throw new Error('解析成功，但没有获得有效的视频地址。');
-
-    $('title').textContent=j.title||'未获取到标题';
-    $('author').textContent=j.author ? '作者：'+j.author : '作者信息未获取到';
-    $('cover').src=coverUrl||'';
-    $('cover').style.display=coverUrl?'block':'none';
-    $('videoLink').href=videoUrl;
-    $('pageLink').href=pageUrl||videoUrl;
+    $('title').textContent=j.title||'未获取到标题';$('author').textContent=j.author?'作者：'+j.author:'作者信息未获取到';
+    $('cover').src=coverUrl||'';$('cover').style.display=coverUrl?'block':'none';$('videoLink').href=videoUrl;$('pageLink').href=pageUrl||videoUrl;
     $('modeBadge').textContent='模式：'+(j.mode||'default')+(j.cached?' · 缓存':'');
-    const elapsed=typeof j.elapsed==='number'?j.elapsed:((performance.now()-started)/1000);
-    $('timeBadge').textContent='耗时：'+elapsed.toFixed(2)+'s';
-    currentVideoUrl=videoUrl;
-    result.classList.add('show');
-    setStatus('解析完成','ok',100);
+    const elapsed=typeof j.elapsed==='number'?j.elapsed:((performance.now()-started)/1000);$('timeBadge').textContent='耗时：'+elapsed.toFixed(2)+'s';
+    currentVideoUrl=videoUrl;result.classList.add('show');setStatus('解析完成','ok',100);
   }catch(err){
-    if(err.name==='AbortError') setStatus('解析超过 35 秒，已自动终止。请稍后再试，或换一个公开链接测试。','error',100);
+    if(err.name==='AbortError') setStatus('解析超过 35 秒，已自动终止。请稍后再试。','error',100);
     else setStatus('解析失败：'+(err.message||'未知错误'),'error',100);
-  }finally{
-    clearTimeout(timer);
-    stopProgress();
-    parseBtn.disabled=false;
-    parseBtn.textContent='立即提取';
-  }
+  }finally{clearTimeout(timer);stopProgress();parseBtn.disabled=false;parseBtn.textContent='立即提取';checkHealth();}
 }
 
 parseBtn.addEventListener('click',go);
 clearBtn.addEventListener('click',()=>{txt.value='';status.className='status';hideResult();txt.focus();});
-$('copyBtn').addEventListener('click',async()=>{
-  if(!currentVideoUrl)return;
-  try{await navigator.clipboard.writeText(currentVideoUrl);$('copyBtn').textContent='已复制';setTimeout(()=>$('copyBtn').textContent='复制视频地址',1200)}catch{$('copyBtn').textContent='复制失败'}
-});
+$('copyBtn').addEventListener('click',async()=>{if(!currentVideoUrl)return;try{await navigator.clipboard.writeText(currentVideoUrl);$('copyBtn').textContent='已复制';setTimeout(()=>$('copyBtn').textContent='复制视频地址',1200)}catch{$('copyBtn').textContent='复制失败'}});
 txt.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')go();});
 checkHealth();
 </script>
