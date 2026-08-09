@@ -1,3 +1,4 @@
+import os
 import re
 import time
 import threading
@@ -21,6 +22,53 @@ _cache_lock = threading.Lock()
 _extract_lock = threading.Lock()
 
 URL_RE = re.compile(r'https?://[^\s<>\"\']+', re.I)
+COOKIE_FILE = '/tmp/douyin-cookies.txt'
+
+
+def _prepare_cookie_file():
+    """Convert a browser Cookie request header stored in Render env into Netscape format.
+
+    The secret is never returned to the browser or written into the repository.
+    """
+    raw = (os.getenv('DOUYIN_COOKIE') or '').strip()
+    if not raw:
+        try:
+            os.remove(COOKIE_FILE)
+        except FileNotFoundError:
+            pass
+        return False
+
+    if raw.lower().startswith('cookie:'):
+        raw = raw.split(':', 1)[1].strip()
+
+    rows = ['# Netscape HTTP Cookie File', '# Generated at container startup from DOUYIN_COOKIE']
+    count = 0
+    for part in raw.replace('\r', '').replace('\n', '').split(';'):
+        part = part.strip()
+        if not part or '=' not in part:
+            continue
+        name, value = part.split('=', 1)
+        name = name.strip()
+        value = value.strip().replace('\t', '')
+        if not name:
+            continue
+        rows.append(f'.douyin.com\tTRUE\t/\tTRUE\t0\t{name}\t{value}')
+        count += 1
+
+    if not count:
+        return False
+
+    with open(COOKIE_FILE, 'w', encoding='utf-8', newline='\n') as f:
+        f.write('\n'.join(rows) + '\n')
+    try:
+        os.chmod(COOKIE_FILE, 0o600)
+    except OSError:
+        pass
+    return True
+
+
+COOKIE_CONFIGURED = _prepare_cookie_file()
+DOUYIN_USER_AGENT = (os.getenv('DOUYIN_USER_AGENT') or '').strip()
 
 
 def _clean_url(text: str) -> str:
@@ -85,6 +133,10 @@ def _extract_once(url: str, impersonate: bool):
         'cachedir': False,
     }
 
+    if COOKIE_CONFIGURED:
+        opts['cookiefile'] = COOKIE_FILE
+    if DOUYIN_USER_AGENT:
+        opts['http_headers'] = {'User-Agent': DOUYIN_USER_AGENT, 'Referer': 'https://www.douyin.com/'}
     if impersonate and ImpersonateTarget is not None:
         opts['impersonate'] = ImpersonateTarget(client='chrome')
 
@@ -110,7 +162,6 @@ def _extract_once(url: str, impersonate: bool):
 
 
 def _extract_fast(url: str):
-    # curl-cffi 已安装时优先浏览器指纹模式，避免先做一轮更容易被风控拦截的普通请求。
     attempts = [True, False] if ImpersonateTarget is not None else [False]
     errors = []
     with _extract_lock:
@@ -123,6 +174,23 @@ def _extract_fast(url: str):
     raise RuntimeError(next((e for e in reversed(errors) if e), '解析失败'))
 
 
+def _friendly_error(message: str):
+    lower = message.lower()
+    if 'fresh cookies' in lower:
+        if COOKIE_CONFIGURED:
+            return (
+                '服务器里的抖音 Cookie 已失效或被风控，请在 Render 的 Environment 中更新 '
+                'DOUYIN_COOKIE；更新后重新部署。'
+            ), 'cookie_expired'
+        return (
+            '抖音当前要求新鲜 Cookie。请在 Render 的 Environment 中添加 DOUYIN_COOKIE '
+            '后重新部署；网站不会把 Cookie 写入 GitHub。'
+        ), 'cookie_required'
+    if '403' in lower or 'forbidden' in lower:
+        return '抖音拒绝了当前服务器请求（403/风控）。请更新 Cookie 后再试。', 'blocked'
+    return message, 'extract_failed'
+
+
 @app.get('/')
 def home():
     return send_from_directory('public', 'index.html')
@@ -130,7 +198,15 @@ def home():
 
 @app.get('/api/health')
 def health():
-    return jsonify(ok=True, service='douyin-online-web', version='3.4.0', engine='flask-yt-dlp')
+    return jsonify(
+        ok=True,
+        service='douyin-online-web',
+        version='3.5.0',
+        engine='flask-yt-dlp',
+        cookie_configured=COOKIE_CONFIGURED,
+        user_agent_configured=bool(DOUYIN_USER_AGENT),
+        ytdlp_version=getattr(yt_dlp.version, '__version__', 'unknown'),
+    )
 
 
 @app.post('/api/parse')
@@ -154,6 +230,7 @@ def parse_video():
                 return jsonify(
                     ok=False,
                     error=failed['error'],
+                    error_code=failed.get('error_code', 'extract_failed'),
                     cached=True,
                     elapsed=round(time.perf_counter() - started, 2),
                 ), 422
@@ -174,16 +251,23 @@ def parse_video():
         return jsonify(result)
 
     except ValueError as exc:
-        return jsonify(ok=False, error=str(exc), elapsed=round(time.perf_counter() - started, 2)), 400
+        return jsonify(ok=False, error=str(exc), error_code='invalid_url', elapsed=round(time.perf_counter() - started, 2)), 400
     except Exception as exc:
-        message = str(exc).strip() or '解析失败'
+        original = str(exc).strip() or '解析失败'
+        message, error_code = _friendly_error(original)
         try:
             url = _clean_url(str((request.get_json(silent=True) or {}).get('text') or ''))
             with _cache_lock:
-                _fail_cache[url] = {'time': time.time(), 'error': message}
+                _fail_cache[url] = {'time': time.time(), 'error': message, 'error_code': error_code}
         except Exception:
             pass
-        return jsonify(ok=False, error=message, elapsed=round(time.perf_counter() - started, 2)), 422
+        return jsonify(
+            ok=False,
+            error=message,
+            error_code=error_code,
+            cookie_configured=COOKIE_CONFIGURED,
+            elapsed=round(time.perf_counter() - started, 2),
+        ), 422
 
 
 @app.errorhandler(404)
