@@ -6,7 +6,7 @@
 <title>抖音素材解析实验室 · AI创作中心</title>
 <style>
 :root{color-scheme:dark;--bg:#080a0e;--p:#11151d;--p2:#0b0f15;--line:#283141;--tx:#f5f7fb;--mut:#8c98aa;--a:#69dfea;--purple:#a68cff;--green:#78efad;--yellow:#ffd36a;--red:#ff91a5}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#142130,#080a0e 45%);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI","PingFang SC",sans-serif;padding:22px}.wrap{max-width:1000px;margin:auto}.nav{display:flex;justify-content:space-between;gap:12px;margin-bottom:24px}.nav a{color:#aeb8c6;text-decoration:none}.hero h1{font-size:clamp(34px,5vw,54px);margin:0 0 8px}.hero p{color:var(--mut);line-height:1.7}.panel{margin-top:20px;border:1px solid rgba(255,255,255,.08);background:rgba(17,21,29,.95);border-radius:24px;padding:22px;box-shadow:0 24px 80px rgba(0,0,0,.35)}textarea,input{width:100%;background:var(--p2);border:1px solid var(--line);color:#fff;border-radius:14px;padding:14px;font:inherit;outline:none}textarea{min-height:135px;resize:vertical;line-height:1.65}.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center}.btn,button{border:1px solid #2b3749;background:#182131;color:#eaf1fa;border-radius:12px;padding:12px 17px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.primary{border:0;background:linear-gradient(135deg,#5ce3ee,#9df5f7);color:#071216}.ai{border:0;background:linear-gradient(135deg,#8e7cff,#c4a0ff);color:#120d23}.btn:disabled,button:disabled{opacity:.45;cursor:not-allowed}.status{display:none;margin-top:14px;padding:13px;border:1px solid #263244;border-radius:14px;background:#0c1118;color:#aeb8c5;line-height:1.6}.status.show{display:block}.status.bad{color:var(--red);border-color:#61303a}.status.ok{color:#aff7c9;border-color:#285740}.status.warn{color:#ffe29a;border-color:#6a5729}.result{display:none;grid-template-columns:190px 1fr;gap:18px;margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,.07)}.result.show{display:grid}.cover{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:16px;background:#080b10}.result h2{margin:4px 0 8px;font-size:20px}.muted{color:var(--mut)}.tools{display:none;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:15px}.tools.show{display:grid}.tool{padding:15px;border:1px solid #273142;border-radius:15px;background:#0c1118}.tool h3{margin:0 0 7px;font-size:15px}.tool p{color:#8490a2;font-size:12px;line-height:1.6;min-height:58px}.output{display:none;margin-top:14px;padding:16px;border:1px solid #29364a;border-radius:15px;background:#090d13}.output.show{display:block}.outHead{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.output pre{white-space:pre-wrap;word-break:break-word;max-height:700px;overflow:auto;line-height:1.78}.settings{margin-top:12px}.settings summary{cursor:pointer;color:#c6d0dc;font-weight:800}.settingsBox{margin-top:12px}.settingsBox p{color:#8997aa;font-size:12px;line-height:1.6}.settingsRow{display:flex;gap:10px}.settingsRow input{flex:1}.small{font-size:12px;color:#748196}.features{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.pill{padding:5px 9px;border:1px solid #29364a;border-radius:999px;color:#9fb0c5;font-size:12px}.pill.on{color:#aaf5c8;border-color:#285941}.pill.aiOn{color:#ddd3ff;border-color:#5b4b85}.pill.warn{color:#ffe29a;border-color:#6a5729}.notice{margin:12px 0;padding:11px 13px;border:1px solid #29364a;border-radius:12px;background:#101722;color:#9baabd;font-size:12px;line-height:1.6}.notice.warn{border-color:#6a5729;color:#ffe29a}.meter{height:6px;background:#121a25;border-radius:999px;overflow:hidden;margin-top:10px}.meter>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#5ce3ee,#a68cff);transition:width .3s}.keyState{margin-top:9px;font-size:12px;color:#8190a3}.keyState.good{color:#aaf5c8}.keyState.warn{color:#ffe29a}@media(max-width:700px){body{padding:14px}.panel{padding:16px}.result.show{grid-template-columns:1fr}.cover{max-width:240px}.tools.show{grid-template-columns:1fr}.settingsRow{flex-direction:column}}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#142130,#080a0e 45%);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI","PingFang SC",sans-serif;padding:22px}.wrap{max-width:1000px;margin:auto}.nav{display:flex;justify-content:space-between;gap:12px;margin-bottom:24px}.nav a{color:#aeb8c6;text-decoration:none}.hero h1{font-size:clamp(34px,5vw,54px);margin:0 0 8px}.hero p{color:var(--mut);line-height:1.7}.panel{margin-top:20px;border:1px solid rgba(255,255,255,.08);background:rgba(17,21,29,.95);border-radius:24px;padding:22px;box-shadow:0 24px 80px rgba(0,0,0,.35)}textarea,input{width:100%;background:var(--p2);border:1px solid var(--line);color:#fff;border-radius:14px;padding:14px;font:inherit;outline:none}textarea{min-height:135px;resize:vertical;line-height:1.65}.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center}.btn,button{border:1px solid #2b3749;background:#182131;color:#eaf1fa;border-radius:12px;padding:12px 17px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.primary{border:0;background:linear-gradient(135deg,#5ce3ee,#9df5f7);color:#071216}.ai{border:0;background:linear-gradient(135deg,#8e7cff,#c4a0ff);color:#120d23}.success{border-color:#285740;color:#aff7c9}.btn:disabled,button:disabled{opacity:.45;cursor:not-allowed}.status{display:none;margin-top:14px;padding:13px;border:1px solid #263244;border-radius:14px;background:#0c1118;color:#aeb8c5;line-height:1.6}.status.show{display:block}.status.bad{color:var(--red);border-color:#61303a}.status.ok{color:#aff7c9;border-color:#285740}.status.warn{color:#ffe29a;border-color:#6a5729}.result{display:none;grid-template-columns:190px 1fr;gap:18px;margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,.07)}.result.show{display:grid}.cover{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:16px;background:#080b10}.result h2{margin:4px 0 8px;font-size:20px}.muted{color:var(--mut)}.tools{display:none;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:15px}.tools.show{display:grid}.tool{padding:15px;border:1px solid #273142;border-radius:15px;background:#0c1118}.tool h3{margin:0 0 7px;font-size:15px}.tool p{color:#8490a2;font-size:12px;line-height:1.6;min-height:58px}.output{display:none;margin-top:14px;padding:16px;border:1px solid #29364a;border-radius:15px;background:#090d13}.output.show{display:block}.outHead{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.output pre{white-space:pre-wrap;word-break:break-word;max-height:700px;overflow:auto;line-height:1.78}.settings{margin-top:12px}.settings summary{cursor:pointer;color:#c6d0dc;font-weight:800}.settingsBox{margin-top:12px}.settingsBox p{color:#8997aa;font-size:12px;line-height:1.6}.settingsRow{display:flex;gap:10px}.settingsRow input{flex:1}.small{font-size:12px;color:#748196}.features{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.pill{padding:5px 9px;border:1px solid #29364a;border-radius:999px;color:#9fb0c5;font-size:12px}.pill.on{color:#aaf5c8;border-color:#285941}.pill.aiOn{color:#ddd3ff;border-color:#5b4b85}.pill.warn{color:#ffe29a;border-color:#6a5729}.notice{margin:12px 0;padding:11px 13px;border:1px solid #29364a;border-radius:12px;background:#101722;color:#9baabd;font-size:12px;line-height:1.6}.notice.warn{border-color:#6a5729;color:#ffe29a}.meter{height:6px;background:#121a25;border-radius:999px;overflow:hidden;margin-top:10px}.meter>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#5ce3ee,#a68cff);transition:width .3s}.keyState{margin-top:9px;font-size:12px;color:#8190a3}.keyState.good{color:#aaf5c8}.keyState.warn{color:#ffe29a}.keyState.bad{color:#ff9cac}.keyActions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}@media(max-width:700px){body{padding:14px}.panel{padding:16px}.result.show{grid-template-columns:1fr}.cover{max-width:240px}.tools.show{grid-template-columns:1fr}.settingsRow{flex-direction:column}}
 </style>
 </head>
 <body>
@@ -32,6 +32,7 @@
       <div class="settingsBox">
         <p>如果 Render 已配置 OPENAI_API_KEY，这里留空即可；否则可临时填写自己的 API Key。Key 只用于当前“完整版文字/视频分析”请求，不写 GitHub，也不存进视频解析令牌。</p>
         <div class="settingsRow"><input id="apiKey" type="password" placeholder="sk-..."><button id="showKey">显示</button><button id="clearKey">清除</button></div>
+        <div class="keyActions"><button id="testKey">测试 AI Key</button><span class="small">测试只验证认证/项目访问，不做转写或生成。</span></div>
         <label class="small"><input id="rememberKey" type="checkbox" style="width:auto;margin-top:10px"> 仅当前标签页记住 API Key</label>
         <div id="keyState" class="keyState warn">AI Key 未配置：有字幕的视频仍可提取完整字幕；无字幕视频需要 Key 才能做完整语音转写和专业分析。</div>
         <div class="small" style="margin-top:7px">不要把 API Key 发到聊天、截图或公开仓库。</div>
@@ -69,7 +70,7 @@
 </div>
 <script>
 const $=id=>document.getElementById(id);
-let token='',videoUrl='',advanced={},progressTimer=null;
+let token='',videoUrl='',advanced={},progressTimer=null,keyValidated=false,keyValidationSource='';
 try{
   const c=sessionStorage.getItem('dy_cookie');if(c){$('cookie').value=c;$('rememberCookie').checked=true}
   const k=sessionStorage.getItem('dy_api_key');if(k){$('apiKey').value=k;$('rememberKey').checked=true}
@@ -78,19 +79,46 @@ function stat(t,type=''){const s=$('status');s.textContent=t;s.className='status
 function clip(t){navigator.clipboard.writeText(t||'').then(()=>stat('已复制到剪贴板','ok'))}
 function save(){try{if($('rememberCookie').checked&&$('cookie').value.trim())sessionStorage.setItem('dy_cookie',$('cookie').value.trim());else sessionStorage.removeItem('dy_cookie');if($('rememberKey').checked&&$('apiKey').value.trim())sessionStorage.setItem('dy_api_key',$('apiKey').value.trim());else sessionStorage.removeItem('dy_api_key')}catch{}}
 function pill(t,c='on'){const e=document.createElement('span');e.className='pill '+c;e.textContent=t;$('features').appendChild(e)}
-function hasAi(){return Boolean(advanced.env_ai_configured||$('apiKey').value.trim())}
-function updateKeyState(){const e=$('keyState');if(advanced.env_ai_configured){e.textContent='AI 已由服务器配置：完整版语音转写和专业视频分析可直接使用。';e.className='keyState good'}else if($('apiKey').value.trim()){e.textContent='当前标签页已填写 AI Key：可进行完整语音转写和专业视频分析。';e.className='keyState good'}else{e.textContent='AI Key 未配置：有字幕的视频仍可提取完整字幕；无字幕视频需要 Key 才能做完整语音转写和专业分析。';e.className='keyState warn'}}
+function hasAiInput(){return Boolean(advanced.env_ai_configured||$('apiKey').value.trim())}
+function setKeyState(text,type='warn'){const e=$('keyState');e.textContent=text;e.className='keyState '+type}
+function updateKeyState(){
+  if(advanced.env_ai_configured){keyValidated=true;keyValidationSource='environment';setKeyState('AI 已由服务器配置并可直接使用。','good');return}
+  if(keyValidated&&$('apiKey').value.trim()){setKeyState('AI Key 已验证成功：完整版语音转写和专业视频分析已启用。','good');return}
+  if($('apiKey').value.trim()){setKeyState('已填写 AI Key，尚未验证。点击“测试 AI Key”，或直接开始完整版文字/视频分析时自动验证。','warn');return}
+  setKeyState('AI Key 未配置：有字幕的视频仍可提取完整字幕；无字幕视频需要 Key 才能做完整语音转写和专业分析。','warn')
+}
 function meterStart(text){clearInterval(progressTimer);$('meter').style.display='block';let p=8;$('meterBar').style.width=p+'%';stat(text);progressTimer=setInterval(()=>{p=Math.min(92,p+Math.max(2,(92-p)*.08));$('meterBar').style.width=p+'%'},1200)}
 function meterDone(){clearInterval(progressTimer);progressTimer=null;$('meterBar').style.width='100%';setTimeout(()=>{$('meter').style.display='none';$('meterBar').style.width='0'},700)}
 
 async function health(){
   try{
-    const [a,b]=await Promise.all([fetch('/api/health',{cache:'no-store'}),fetch('/api/advanced-health',{cache:'no-store'})]);
+    const [a,b]=await Promise.all([fetch('/api/health',{cache:'no-store'}),fetch('/api/advanced-health-v2',{cache:'no-store'})]);
     const h=await a.json(),x=await b.json();advanced=x||{};
     $('health').textContent='服务在线 · '+(x.version||h.version||'');$('features').innerHTML='';
-    pill('✓ 视频下载');pill('✓ 完整版文字');pill(x.chunked_transcription?'✓ 45秒分段转写':'✓ 完整转写');pill(x.env_ai_configured?'✓ AI已配置':'支持网页AI Key',x.env_ai_configured?'aiOn':'on');
+    pill('✓ 视频下载');pill('✓ 完整版文字');pill(x.chunked_transcription?'✓ 45秒分段转写':'✓ 完整转写');pill(x.api_key_test_supported?'✓ AI Key可验证':'支持网页AI Key',x.env_ai_configured?'aiOn':'on');
+    if(x.env_ai_configured){keyValidated=true;keyValidationSource='environment'}
     updateKeyState();
   }catch{$('health').textContent='服务状态未知'}
+}
+
+async function testAiKey(silent=false){
+  if(advanced.env_ai_configured){keyValidated=true;keyValidationSource='environment';updateKeyState();return true}
+  const key=$('apiKey').value.trim();
+  if(!key){keyValidated=false;setKeyState('尚未填写 AI Key。','warn');if(!silent)stat('请先填写 AI Key。','warn');return false}
+  const btn=$('testKey');btn.disabled=true;if(!silent)stat('正在验证 AI Key…');
+  try{
+    const r=await fetch('/api/test-ai-key',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({api_key:key})});
+    const d=await r.json();if(!r.ok||!d.ok){const e=new Error(d.error||'AI Key 验证失败');e.code=d.error_code;throw e}
+    keyValidated=true;keyValidationSource=d.source||'page';save();setKeyState('AI Key 验证成功：完整版语音转写和专业视频分析已启用。','good');if(!silent)stat('AI Key 验证成功。','ok');return true
+  }catch(e){keyValidated=false;setKeyState(e.message||'AI Key 验证失败','bad');if(!silent)stat(e.message||'AI Key 验证失败','bad');return false}
+  finally{btn.disabled=false}
+}
+
+async function ensureAiReady(){
+  if(advanced.env_ai_configured)return true;
+  if(keyValidated&&$('apiKey').value.trim())return true;
+  if(!$('apiKey').value.trim()){$('aiDetails').open=true;updateKeyState();stat('该视频没有可用字幕，需要先配置 AI Key 才能完成整段语音转写。','warn');return false}
+  return await testAiKey(true)
 }
 
 $('parse').onclick=async()=>{
@@ -105,19 +133,21 @@ $('parse').onclick=async()=>{
 
 async function extractFullText(){
   if(!token)return;save();$('textBtn').disabled=true;$('textOut').classList.add('show');$('textNotice').className='notice';$('textNotice').textContent='正在检查字幕；没有字幕时将按 45 秒分段转写整段音频。';$('textContent').textContent='正在处理…';$('textMeta').textContent='';
-  meterStart(hasAi()?'正在提取完整版文字：检查字幕 / 分段转写…':'正在检查是否有可用字幕…');
+  meterStart('正在提取完整版文字：检查字幕 / 分段转写…');
   const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),285000);
   try{
-    const r=await fetch('/api/text-full/'+token,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({api_key:$('apiKey').value.trim()}),signal:ctl.signal});
-    const d=await r.json();if(!r.ok||d.ok===false){const e=new Error(d.error||'完整文字提取失败');e.code=d.error_code;throw e}
-    $('textContent').textContent=d.text||'未提取到文字';
-    if(d.complete){$('textNotice').className='notice';$('textNotice').textContent='已获得完整版文字。分析视频时将直接复用这份文字，不会再次重复转写。';$('textMeta').textContent='来源：'+(d.source||'未知')+' · '+Number(d.elapsed||0).toFixed(1)+'s'+(d.chunk_count?' · '+d.chunk_count+'段':'');stat('完整版文字提取完成','ok')}
-    else{$('textNotice').className='notice warn';$('textNotice').textContent='该视频没有可用字幕。当前先显示作品标题/文案；填写 AI Key 后再次点击“提取完整版文字”，即可进行完整语音转写。';$('textMeta').textContent='当前：基础文字 · 尚未完成语音转写';$('aiDetails').open=true;stat('已提取基础文字；等待 AI Key 完成整段语音转写。','warn')}
+    let key=$('apiKey').value.trim();
+    let r=await fetch('/api/text-full/'+token,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({api_key:key}),signal:ctl.signal});
+    let d=await r.json();
+    if(r.ok&&d.ok&&d.complete){$('textContent').textContent=d.text||'未提取到文字';$('textNotice').className='notice';$('textNotice').textContent='已获得完整版文字。分析视频时会直接复用，不会重复转写。';$('textMeta').textContent='来源：'+(d.source||'未知')+' · '+Number(d.elapsed||0).toFixed(1)+'s'+(d.chunk_count?' · '+d.chunk_count+'段':'');stat('完整版文字提取完成','ok');return}
+    if(r.ok&&d.ok&&!d.complete){$('textContent').textContent=d.text||'';$('textNotice').className='notice warn';$('textNotice').textContent='当前已显示标题/文案，但视频没有字幕。验证 AI Key 后将自动继续完整语音转写。';$('textMeta').textContent='当前：基础文字 · 尚未完成语音转写';$('aiDetails').open=true;const ready=await ensureAiReady();if(!ready){stat('已提取基础文字；等待有效 AI Key 完成整段语音转写。','warn');return}key=$('apiKey').value.trim();r=await fetch('/api/text-full/'+token,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({api_key:key}),signal:ctl.signal});d=await r.json()}
+    if(!r.ok||!d.ok){const e=new Error(d.error||'完整文字提取失败');e.code=d.error_code;throw e}
+    $('textContent').textContent=d.text||'未提取到文字';$('textNotice').className='notice';$('textNotice').textContent='已获得完整版文字。分析视频时会直接复用，不会重复转写。';$('textMeta').textContent='来源：'+(d.source||'未知')+' · '+Number(d.elapsed||0).toFixed(1)+'s'+(d.chunk_count?' · '+d.chunk_count+'段':'');stat('完整版文字提取完成','ok')
   }catch(e){if(e.name==='AbortError'){$('textContent').textContent='完整版文字处理超过约 285 秒，已停止等待。';stat('完整文字处理超时','warn')}else{$('textContent').textContent='处理失败：'+(e.message||'未知错误');if(e.code==='ai_key_required')$('aiDetails').open=true;stat(e.message||'处理失败',e.code==='ai_key_required'?'warn':'bad')}}finally{clearTimeout(tm);$('textBtn').disabled=false;meterDone()}
 }
 
 async function analyzeFull(){
-  if(!token)return;save();if(!hasAi()){$('aiDetails').open=true;updateKeyState();return stat('专业视频分析需要 AI Key。填写后会先完成整段语音转写，再结合关键帧分析。','warn')}
+  if(!token)return;save();const ready=await ensureAiReady();if(!ready)return;
   $('aiBtn').disabled=true;$('aiOut').classList.add('show');$('aiContent').textContent='正在准备完整版文字、抽取最多 7 个关键帧并进行专业分析…';$('aiMeta').textContent='';meterStart('正在进行专业视频分析：完整版文字 + 多关键帧…');
   const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),295000);
   try{
@@ -127,9 +157,9 @@ async function analyzeFull(){
   }catch(e){if(e.name==='AbortError'){$('aiContent').textContent='分析超过约 295 秒，已停止等待。';stat('视频分析超时','warn')}else{$('aiContent').textContent='分析失败：'+(e.message||'未知错误');if(e.code==='ai_key_required')$('aiDetails').open=true;stat(e.message||'分析失败',e.code==='ai_key_required'?'warn':'bad')}}finally{clearTimeout(tm);$('aiBtn').disabled=false;meterDone()}
 }
 
-$('textBtn').onclick=extractFullText;$('aiBtn').onclick=analyzeFull;$('copyUrl').onclick=()=>clip(videoUrl);$('copyText').onclick=()=>clip($('textContent').textContent);$('copyAi').onclick=()=>clip($('aiContent').textContent);$('clear').onclick=()=>location.reload();
+$('testKey').onclick=()=>testAiKey(false);$('textBtn').onclick=extractFullText;$('aiBtn').onclick=analyzeFull;$('copyUrl').onclick=()=>clip(videoUrl);$('copyText').onclick=()=>clip($('textContent').textContent);$('copyAi').onclick=()=>clip($('aiContent').textContent);$('clear').onclick=()=>location.reload();
 $('showCookie').onclick=()=>{$('cookie').type=$('cookie').type==='password'?'text':'password';$('showCookie').textContent=$('cookie').type==='password'?'显示':'隐藏'};$('clearCookie').onclick=()=>{$('cookie').value='';$('rememberCookie').checked=false;try{sessionStorage.removeItem('dy_cookie')}catch{}};
-$('showKey').onclick=()=>{$('apiKey').type=$('apiKey').type==='password'?'text':'password';$('showKey').textContent=$('apiKey').type==='password'?'显示':'隐藏'};$('clearKey').onclick=()=>{$('apiKey').value='';$('rememberKey').checked=false;try{sessionStorage.removeItem('dy_api_key')}catch{}updateKeyState()};$('apiKey').addEventListener('input',()=>{save();updateKeyState()});$('rememberKey').onchange=save;$('cookie').onchange=save;$('rememberCookie').onchange=save;
+$('showKey').onclick=()=>{$('apiKey').type=$('apiKey').type==='password'?'text':'password';$('showKey').textContent=$('apiKey').type==='password'?'显示':'隐藏'};$('clearKey').onclick=()=>{$('apiKey').value='';keyValidated=false;keyValidationSource='';$('rememberKey').checked=false;try{sessionStorage.removeItem('dy_api_key')}catch{}updateKeyState()};$('apiKey').addEventListener('input',()=>{keyValidated=false;keyValidationSource='';save();updateKeyState()});$('rememberKey').onchange=save;$('cookie').onchange=save;$('rememberCookie').onchange=save;
 health();
 </script>
 </body></html>
