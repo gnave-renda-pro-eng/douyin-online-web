@@ -6,14 +6,14 @@
 <title>抖音视频在线提取</title>
 <style>
 :root{color-scheme:dark;--bg:#07090f;--panel:#121722;--panel2:#0c111a;--line:#293244;--text:#f7f9ff;--muted:#8f9bad;--accent:#49e6ff;--danger:#ff6b86;--ok:#76efad;--warn:#ffd36a}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#101827 0,#07090f 45%);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;min-height:100vh;padding:36px 18px}.wrap{max-width:920px;margin:auto}.hero{margin-bottom:22px}.hero h1{font-size:clamp(30px,5vw,52px);margin:0 0 10px;letter-spacing:-1.5px}.hero p{margin:0;color:var(--muted);font-size:16px}.panel{background:rgba(18,23,34,.92);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:24px;box-shadow:0 24px 80px rgba(0,0,0,.35)}textarea,input{width:100%;border:1px solid var(--line);background:var(--panel2);color:#fff;border-radius:16px;padding:17px;font-size:15px;outline:none}textarea{min-height:150px;resize:vertical;line-height:1.65}input:focus,textarea:focus{border-color:#4fd9ee;box-shadow:0 0 0 3px rgba(73,230,255,.09)}.actions{display:flex;gap:12px;align-items:center;margin-top:14px;flex-wrap:wrap}button,.btn{border:0;border-radius:14px;padding:13px 20px;font-weight:800;font-size:14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}.primary{background:linear-gradient(135deg,#49e6ff,#8af3ff);color:#031016;box-shadow:0 9px 26px rgba(73,230,255,.18)}button:disabled{opacity:.55;cursor:not-allowed}.secondary{background:#182130;color:#dfe8f5;border:1px solid #2c394d}.status{margin-top:18px;border-radius:16px;padding:14px 16px;background:#0d131d;border:1px solid #222d3d;color:#aab6c8;display:none}.status.show{display:block}.status.error{border-color:rgba(255,107,134,.38);color:#ff9daf;background:rgba(255,77,113,.07)}.status.ok{border-color:rgba(118,239,173,.35);color:#a9f7c9;background:rgba(80,220,140,.07)}.progress{height:7px;background:#172131;border-radius:999px;overflow:hidden;margin-top:12px}.bar{height:100%;width:12%;background:linear-gradient(90deg,#49e6ff,#9ef4ff);border-radius:inherit;transition:width .35s ease}.result{margin-top:18px;display:none}.result.show{display:grid;grid-template-columns:220px 1fr;gap:20px;padding-top:18px;border-top:1px solid rgba(255,255,255,.08)}.cover{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:18px;background:#0a0f17;border:1px solid #253144}.meta h2{margin:0 0 10px;font-size:21px;line-height:1.45}.meta p{margin:7px 0;color:var(--muted)}.badge{display:inline-flex;padding:5px 9px;border-radius:999px;background:#0b2026;color:#82efff;border:1px solid #15434b;font-size:12px;margin-right:7px}.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}.small{font-size:12px;color:#718096}.tips{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.tip{padding:15px;border:1px solid rgba(255,255,255,.07);border-radius:16px;background:rgba(10,14,21,.65);color:#9ca9bc;font-size:13px;line-height:1.6}.tip strong{display:block;color:#edf6ff;margin-bottom:4px}.dot{width:8px;height:8px;border-radius:50%;background:#526174;display:inline-block;margin-right:7px}.dot.online{background:#69eaa5;box-shadow:0 0 12px rgba(105,234,165,.7)}.dot.warn{background:var(--warn);box-shadow:0 0 12px rgba(255,211,106,.45)}details{margin-top:16px;border:1px solid #273247;border-radius:16px;background:#0c111a;padding:0 16px}summary{cursor:pointer;padding:14px 0;font-weight:800;color:#dfe8f5}.cookieBox{padding:0 0 16px}.cookieBox p{font-size:13px;line-height:1.6;color:#8794a8;margin:0 0 10px}.cookieRow{display:flex;gap:10px;align-items:center}.cookieRow input{flex:1}.privacy{margin-top:9px;color:#6f7d92;font-size:12px;line-height:1.55}@media(max-width:720px){body{padding:24px 12px}.panel{padding:18px}.result.show{grid-template-columns:1fr}.cover{max-width:260px}.tips{grid-template-columns:1fr}.cookieRow{flex-direction:column;align-items:stretch}}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#101827 0,#07090f 45%);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;min-height:100vh;padding:36px 18px}.wrap{max-width:920px;margin:auto}.hero{margin-bottom:22px}.hero h1{font-size:clamp(30px,5vw,52px);margin:0 0 10px;letter-spacing:-1.5px}.hero p{margin:0;color:var(--muted);font-size:16px}.panel{background:rgba(18,23,34,.92);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:24px;box-shadow:0 24px 80px rgba(0,0,0,.35)}textarea,input{width:100%;border:1px solid var(--line);background:var(--panel2);color:#fff;border-radius:16px;padding:17px;font-size:15px;outline:none}textarea{min-height:150px;resize:vertical;line-height:1.65}input:focus,textarea:focus{border-color:#4fd9ee;box-shadow:0 0 0 3px rgba(73,230,255,.09)}.actions{display:flex;gap:12px;align-items:center;margin-top:14px;flex-wrap:wrap}button,.btn{border:0;border-radius:14px;padding:13px 20px;font-weight:800;font-size:14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}.primary{background:linear-gradient(135deg,#49e6ff,#8af3ff);color:#031016;box-shadow:0 9px 26px rgba(73,230,255,.18)}button:disabled{opacity:.55;cursor:not-allowed}.secondary{background:#182130;color:#dfe8f5;border:1px solid #2c394d}.status{margin-top:18px;border-radius:16px;padding:14px 16px;background:#0d131d;border:1px solid #222d3d;color:#aab6c8;display:none}.status.show{display:block}.status.error{border-color:rgba(255,107,134,.38);color:#ff9daf;background:rgba(255,77,113,.07)}.status.ok{border-color:rgba(118,239,173,.35);color:#a9f7c9;background:rgba(80,220,140,.07)}.status.warn{border-color:rgba(255,211,106,.38);color:#ffe29b;background:rgba(255,196,72,.07)}.progress{height:7px;background:#172131;border-radius:999px;overflow:hidden;margin-top:12px}.bar{height:100%;width:12%;background:linear-gradient(90deg,#49e6ff,#9ef4ff);border-radius:inherit;transition:width .35s ease}.status.warn .bar{background:linear-gradient(90deg,#ffd36a,#ffe9a8)}.result{margin-top:18px;display:none}.result.show{display:grid;grid-template-columns:220px 1fr;gap:20px;padding-top:18px;border-top:1px solid rgba(255,255,255,.08)}.cover{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:18px;background:#0a0f17;border:1px solid #253144}.meta h2{margin:0 0 10px;font-size:21px;line-height:1.45}.meta p{margin:7px 0;color:var(--muted)}.badge{display:inline-flex;padding:5px 9px;border-radius:999px;background:#0b2026;color:#82efff;border:1px solid #15434b;font-size:12px;margin-right:7px}.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}.small{font-size:12px;color:#718096}.tips{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.tip{padding:15px;border:1px solid rgba(255,255,255,.07);border-radius:16px;background:rgba(10,14,21,.65);color:#9ca9bc;font-size:13px;line-height:1.6}.tip strong{display:block;color:#edf6ff;margin-bottom:4px}.dot{width:8px;height:8px;border-radius:50%;background:#526174;display:inline-block;margin-right:7px}.dot.online{background:#69eaa5;box-shadow:0 0 12px rgba(105,234,165,.7)}.dot.warn{background:var(--warn);box-shadow:0 0 12px rgba(255,211,106,.45)}details{margin-top:16px;border:1px solid #273247;border-radius:16px;background:#0c111a;padding:0 16px}summary{cursor:pointer;padding:14px 0;font-weight:800;color:#dfe8f5}.cookieBox{padding:0 0 16px}.cookieBox p{font-size:13px;line-height:1.6;color:#8794a8;margin:0 0 10px}.cookieRow{display:flex;gap:10px;align-items:center}.cookieRow input{flex:1}.privacy{margin-top:9px;color:#6f7d92;font-size:12px;line-height:1.55}.statusActions{display:none;margin-top:12px}.statusActions.show{display:flex}@media(max-width:720px){body{padding:24px 12px}.panel{padding:18px}.result.show{grid-template-columns:1fr}.cover{max-width:260px}.tips{grid-template-columns:1fr}.cookieRow{flex-direction:column;align-items:stretch}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="hero">
     <h1>抖音视频在线提取</h1>
-    <p>粘贴完整分享文案或 douyin.com 链接，自动识别并提取公开可访问的视频信息。</p>
+    <p>粘贴完整分享文案或 douyin.com 链接。系统会先展开短链并识别视频/图文类型，再处理视频。</p>
   </div>
 
   <section class="panel">
@@ -25,11 +25,11 @@
     </div>
 
     <details id="cookieDetails">
-      <summary>Cookie 设置（遇到 Fresh cookies / 风控时使用）</summary>
+      <summary>Cookie 设置（仅视频遇到 Fresh cookies / 风控时使用）</summary>
       <div class="cookieBox">
         <p>把浏览器抖音请求头里的 <b>Cookie:</b> 后面整段内容粘贴到这里。它只会随本次解析请求发送到你自己的 Render 服务，不会写进 GitHub。</p>
         <div class="cookieRow">
-          <input id="cookieInput" type="password" autocomplete="off" spellcheck="false" placeholder="粘贴 Cookie 值，不要包含账号密码之外的其他说明文字">
+          <input id="cookieInput" type="password" autocomplete="off" spellcheck="false" placeholder="粘贴 Cookie 值">
           <button id="showCookieBtn" class="secondary" type="button">显示</button>
           <button id="clearCookieBtn" class="secondary" type="button">清除</button>
         </div>
@@ -40,6 +40,9 @@
 
     <div id="status" class="status">
       <div id="statusText">准备解析</div>
+      <div id="statusActions" class="links statusActions">
+        <a id="detectedPageLink" class="btn secondary" target="_blank" rel="noopener noreferrer">打开原作品</a>
+      </div>
       <div class="progress"><div id="bar" class="bar"></div></div>
     </div>
 
@@ -59,9 +62,9 @@
     </div>
 
     <div class="tips">
-      <div class="tip"><strong>① 自动识别</strong>完整分享文案里有其他文字也没关系，会自动找出 douyin.com 链接。</div>
-      <div class="tip"><strong>② Cookie 直传</strong>遇到抖音风控时，不用再进 Render 后台配置环境变量。</div>
-      <div class="tip"><strong>③ 结果缓存</strong>同一链接和同一 Cookie 短时间再次解析会直接使用缓存结果。</div>
+      <div class="tip"><strong>① 先识别类型</strong>自动展开 v.douyin.com 短链，区分 /video/ 视频与 /note/ 图文，不再把图文当视频硬解析。</div>
+      <div class="tip"><strong>② Cookie 只给视频</strong>只有视频遇到抖音风控时才需要 Cookie；图文类型不会要求你反复填写。</div>
+      <div class="tip"><strong>③ 快速返回</strong>检测到图文会直接提示，视频结果则继续缓存，减少重复等待。</div>
     </div>
   </section>
 </div>
@@ -69,33 +72,40 @@
 <script>
 const $=id=>document.getElementById(id);
 const txt=$('txt'),parseBtn=$('parseBtn'),status=$('status'),statusText=$('statusText'),bar=$('bar'),result=$('result'),health=$('health');
-const cookieDetails=$('cookieDetails'),cookieInput=$('cookieInput'),rememberCookie=$('rememberCookie');
+const cookieDetails=$('cookieDetails'),cookieInput=$('cookieInput'),rememberCookie=$('rememberCookie'),statusActions=$('statusActions'),detectedPageLink=$('detectedPageLink');
 let currentVideoUrl='',progressTimer=null;
 
 try{const saved=sessionStorage.getItem('douyin_session_cookie');if(saved){cookieInput.value=saved;rememberCookie.checked=true}}catch{}
-function setStatus(text,type='normal',pct=12){status.className='status show'+(type==='error'?' error':type==='ok'?' ok':'');statusText.textContent=text;bar.style.width=Math.max(8,Math.min(100,pct))+'%'}
-function hideResult(){result.classList.remove('show');currentVideoUrl=''}
+function setStatus(text,type='normal',pct=12){status.className='status show'+(type==='error'?' error':type==='ok'?' ok':type==='warn'?' warn':'');statusText.textContent=text;bar.style.width=Math.max(8,Math.min(100,pct))+'%';if(type!=='warn')statusActions.classList.remove('show')}
+function hideResult(){result.classList.remove('show');currentVideoUrl='';statusActions.classList.remove('show')}
 function validHttpUrl(value){try{const u=new URL(value);return /^https?:$/.test(u.protocol)?u.href:''}catch{return''}}
-function startProgress(){let step=0;const stages=[['正在识别分享链接…',20],['正在请求抖音页面…',38],['正在获取视频信息…',58],['正在选择可访问的视频地址…',76],['正在完成解析…',88]];setStatus(stages[0][0],'normal',stages[0][1]);progressTimer=setInterval(()=>{step=Math.min(step+1,stages.length-1);setStatus(stages[step][0],'normal',stages[step][1])},1800)}
+function startProgress(){let step=0;const stages=[['正在展开短链并识别作品类型…',22],['正在确认视频页面…',40],['正在请求抖音视频信息…',58],['正在选择可访问的视频地址…',76],['正在完成解析…',88]];setStatus(stages[0][0],'normal',stages[0][1]);progressTimer=setInterval(()=>{step=Math.min(step+1,stages.length-1);setStatus(stages[step][0],'normal',stages[step][1])},1800)}
 function stopProgress(){if(progressTimer){clearInterval(progressTimer);progressTimer=null}}
 function saveCookieIfNeeded(){try{if(rememberCookie.checked&&cookieInput.value.trim())sessionStorage.setItem('douyin_session_cookie',cookieInput.value.trim());else sessionStorage.removeItem('douyin_session_cookie')}catch{}}
 
-async function checkHealth(){try{const r=await fetch('/api/health',{cache:'no-store'}),j=await r.json();if(j.ok){if(j.cookie_configured)health.innerHTML='<span class="dot online"></span>服务在线 · '+(j.version||'')+' · 服务器 Cookie 已配置';else health.innerHTML='<span class="dot warn"></span>服务在线 · '+(j.version||'')+' · 可网页粘贴 Cookie';return}}catch{}health.innerHTML='<span class="dot"></span>服务暂不可用'}
+async function checkHealth(){try{const r=await fetch('/api/health',{cache:'no-store'}),j=await r.json();if(j.ok){if(j.cookie_configured)health.innerHTML='<span class="dot online"></span>服务在线 · '+(j.version||'')+' · 服务器 Cookie 已配置';else health.innerHTML='<span class="dot warn"></span>服务在线 · '+(j.version||'')+' · 自动识别视频/图文';return}}catch{}health.innerHTML='<span class="dot"></span>服务暂不可用'}
 
 async function go(){
   const text=txt.value.trim(),cookie=cookieInput.value.trim();
   if(!text){setStatus('请先粘贴抖音分享文案或链接。','error',100);return}
-  saveCookieIfNeeded();parseBtn.disabled=true;parseBtn.textContent='正在提取…';hideResult();startProgress();
+  saveCookieIfNeeded();parseBtn.disabled=true;parseBtn.textContent='正在识别…';hideResult();startProgress();
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),35000),started=performance.now();
   try{
     const r=await fetch('/api/parse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,cookie,user_agent:navigator.userAgent}),signal:controller.signal});
     const raw=await r.text();let j;try{j=JSON.parse(raw)}catch{throw new Error('服务器返回了非 JSON 数据，请稍后重试。')}
-    if(!r.ok||!j.ok){const err=new Error(j.error||'解析失败');err.code=j.error_code||'';throw err}
+    if(!r.ok||!j.ok){const err=new Error(j.error||'解析失败');err.code=j.error_code||'';err.data=j;throw err}
     const videoUrl=validHttpUrl(j.url),pageUrl=validHttpUrl(j.webpage_url),coverUrl=validHttpUrl(j.cover);if(!videoUrl)throw new Error('解析成功，但没有获得有效的视频地址。');
-    $('title').textContent=j.title||'未获取到标题';$('author').textContent=j.author?'作者：'+j.author:'作者信息未获取到';$('cover').src=coverUrl||'';$('cover').style.display=coverUrl?'block':'none';$('videoLink').href=videoUrl;$('pageLink').href=pageUrl||videoUrl;$('modeBadge').textContent='模式：'+(j.mode||'default')+(j.cached?' · 缓存':'')+(j.cookie_used?' · Cookie':'');
-    const elapsed=typeof j.elapsed==='number'?j.elapsed:((performance.now()-started)/1000);$('timeBadge').textContent='耗时：'+elapsed.toFixed(2)+'s';currentVideoUrl=videoUrl;result.classList.add('show');setStatus('解析完成','ok',100);
+    $('title').textContent=j.title||'未获取到标题';$('author').textContent=j.author?'作者：'+j.author:'作者信息未获取到';$('cover').src=coverUrl||'';$('cover').style.display=coverUrl?'block':'none';$('videoLink').href=videoUrl;$('pageLink').href=pageUrl||videoUrl;$('modeBadge').textContent='视频 · '+(j.mode||'default')+(j.cached?' · 缓存':'')+(j.cookie_used?' · Cookie':'');
+    const elapsed=typeof j.elapsed==='number'?j.elapsed:((performance.now()-started)/1000);$('timeBadge').textContent='耗时：'+elapsed.toFixed(2)+'s';currentVideoUrl=videoUrl;result.classList.add('show');setStatus('视频解析完成','ok',100);
   }catch(err){
-    if(err.name==='AbortError')setStatus('解析超过 35 秒，已自动终止。请稍后再试。','error',100);else{if(['cookie_required','cookie_expired','blocked'].includes(err.code))cookieDetails.open=true;setStatus('解析失败：'+(err.message||'未知错误'),'error',100)}
+    if(err.name==='AbortError'){setStatus('解析超过 35 秒，已自动终止。请稍后再试。','error',100)}
+    else if(err.code==='content_not_video'){
+      setStatus('已识别：这是抖音图文/笔记作品（/note/），不是标准视频，因此不会进入视频下载解析。','warn',100);
+      const page=validHttpUrl(err.data&&err.data.webpage_url);if(page){detectedPageLink.href=page;statusActions.classList.add('show')}
+    }else{
+      if(['cookie_required','cookie_expired','blocked'].includes(err.code))cookieDetails.open=true;
+      setStatus('解析失败：'+(err.message||'未知错误'),'error',100)
+    }
   }finally{clearTimeout(timer);stopProgress();parseBtn.disabled=false;parseBtn.textContent='立即提取';checkHealth()}
 }
 
