@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>抖音视频在线提取</title>
+<style>
+body{background:#090b12;color:#fff;font-family:Arial;padding:40px}main{max-width:800px;margin:auto;background:#151923;padding:30px;border-radius:20px}textarea{width:100%;height:120px;border-radius:12px;padding:15px;background:#0d1118;color:white}button{margin-top:15px;padding:14px 30px;border:0;border-radius:12px;background:#39e7ff;font-weight:bold}#out{margin-top:20px;color:#9ee7ff}img{max-width:300px;border-radius:12px}
+</style>
+</head>
+<body><main><h1>抖音视频在线提取</h1><p>粘贴抖音分享文案或链接</p><textarea id="txt" placeholder="复制抖音分享内容到这里"></textarea><button onclick="go()">立即提取</button><div id="out"></div></main>
+<script>async function go(){out.innerHTML='解析中...';let r=await fetch('/api/parse',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:txt.value})});let j=await r.json();out.innerHTML=j.ok?`<h3>${j.title}</h3><p>${j.author}</p><img src="${j.cover}"><br><a href="${j.url}" target="_blank">打开视频</a>`:'失败：'+j.error}</script></body></html>
