@@ -1,6 +1,6 @@
 {
   "name": "douyin-online-web",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "private": true,
   "description": "Online Douyin public video extractor web app",
   "main": "server.js",
@@ -10,5 +10,8 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
   }
 }
