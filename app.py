@@ -14,7 +14,9 @@ except Exception:
 app = Flask(__name__, static_folder='public', static_url_path='')
 
 CACHE_TTL = 600
+FAIL_CACHE_TTL = 45
 _cache = {}
+_fail_cache = {}
 _cache_lock = threading.Lock()
 _extract_lock = threading.Lock()
 
@@ -37,17 +39,18 @@ def _pick_video_url(info):
         return ''
 
     direct = info.get('url')
-    if isinstance(direct, str) and direct.startswith('http'):
+    if isinstance(direct, str) and direct.startswith(('http://', 'https://')):
         return direct
 
     for key in ('requested_downloads', 'requested_formats'):
         items = info.get(key)
         if isinstance(items, list):
             for item in items:
-                if isinstance(item, dict):
-                    u = item.get('url')
-                    if isinstance(u, str) and u.startswith('http'):
-                        return u
+                if not isinstance(item, dict):
+                    continue
+                u = item.get('url')
+                if isinstance(u, str) and u.startswith(('http://', 'https://')):
+                    return u
 
     formats = info.get('formats')
     if isinstance(formats, list):
@@ -55,25 +58,25 @@ def _pick_video_url(info):
             if not isinstance(item, dict):
                 continue
             u = item.get('url')
-            if not isinstance(u, str) or not u.startswith('http'):
+            if not isinstance(u, str) or not u.startswith(('http://', 'https://')):
                 continue
             if item.get('vcodec') not in (None, 'none'):
                 return u
         for item in reversed(formats):
             if isinstance(item, dict):
                 u = item.get('url')
-                if isinstance(u, str) and u.startswith('http'):
+                if isinstance(u, str) and u.startswith(('http://', 'https://')):
                     return u
     return ''
 
 
-def _extract_once(url: str, impersonate: bool = False):
+def _extract_once(url: str, impersonate: bool):
     opts = {
         'quiet': True,
         'no_warnings': True,
         'noplaylist': True,
         'skip_download': True,
-        'socket_timeout': 6,
+        'socket_timeout': 7,
         'retries': 0,
         'fragment_retries': 0,
         'extractor_retries': 0,
@@ -81,6 +84,7 @@ def _extract_once(url: str, impersonate: bool = False):
         'format': 'best[ext=mp4]/best',
         'cachedir': False,
     }
+
     if impersonate and ImpersonateTarget is not None:
         opts['impersonate'] = ImpersonateTarget(client='chrome')
 
@@ -106,16 +110,17 @@ def _extract_once(url: str, impersonate: bool = False):
 
 
 def _extract_fast(url: str):
-    # 同一进程内复用已加载的 yt-dlp；先走快速路径，失败再用浏览器指纹兼容模式。
+    # curl-cffi 已安装时优先浏览器指纹模式，避免先做一轮更容易被风控拦截的普通请求。
+    attempts = [True, False] if ImpersonateTarget is not None else [False]
+    errors = []
     with _extract_lock:
-        try:
-            return _extract_once(url, impersonate=False), 'fast'
-        except Exception as first_error:
+        for use_impersonation in attempts:
             try:
-                return _extract_once(url, impersonate=True), 'compat'
-            except Exception as second_error:
-                msg = str(second_error).strip() or str(first_error).strip() or '解析失败'
-                raise RuntimeError(msg)
+                result = _extract_once(url, impersonate=use_impersonation)
+                return result, ('browser' if use_impersonation else 'plain')
+            except Exception as exc:
+                errors.append(str(exc).strip())
+    raise RuntimeError(next((e for e in reversed(errors) if e), '解析失败'))
 
 
 @app.get('/')
@@ -125,7 +130,7 @@ def home():
 
 @app.get('/api/health')
 def health():
-    return jsonify(ok=True, service='douyin-online-web', version='3.3.0', engine='yt-dlp-api')
+    return jsonify(ok=True, service='douyin-online-web', version='3.4.0', engine='flask-yt-dlp')
 
 
 @app.post('/api/parse')
@@ -134,8 +139,8 @@ def parse_video():
     try:
         payload = request.get_json(silent=True) or {}
         url = _clean_url(str(payload.get('text') or ''))
-
         now = time.time()
+
         with _cache_lock:
             cached = _cache.get(url)
             if cached and now - cached['time'] < CACHE_TTL:
@@ -144,6 +149,15 @@ def parse_video():
                 result['elapsed'] = round(time.perf_counter() - started, 2)
                 return jsonify(result)
 
+            failed = _fail_cache.get(url)
+            if failed and now - failed['time'] < FAIL_CACHE_TTL:
+                return jsonify(
+                    ok=False,
+                    error=failed['error'],
+                    cached=True,
+                    elapsed=round(time.perf_counter() - started, 2),
+                ), 422
+
         result, mode = _extract_fast(url)
         result['mode'] = mode
         result['cached'] = False
@@ -151,17 +165,24 @@ def parse_video():
 
         with _cache_lock:
             _cache[url] = {'time': time.time(), 'data': dict(result)}
-            # 防止长期运行时缓存无限增长
+            _fail_cache.pop(url, None)
             if len(_cache) > 100:
                 oldest = sorted(_cache.items(), key=lambda kv: kv[1]['time'])[:20]
                 for key, _ in oldest:
                     _cache.pop(key, None)
 
         return jsonify(result)
-    except ValueError as e:
-        return jsonify(ok=False, error=str(e), elapsed=round(time.perf_counter() - started, 2)), 400
-    except Exception as e:
-        message = str(e).strip() or '解析失败'
+
+    except ValueError as exc:
+        return jsonify(ok=False, error=str(exc), elapsed=round(time.perf_counter() - started, 2)), 400
+    except Exception as exc:
+        message = str(exc).strip() or '解析失败'
+        try:
+            url = _clean_url(str((request.get_json(silent=True) or {}).get('text') or ''))
+            with _cache_lock:
+                _fail_cache[url] = {'time': time.time(), 'error': message}
+        except Exception:
+            pass
         return jsonify(ok=False, error=message, elapsed=round(time.perf_counter() - started, 2)), 422
 
 
