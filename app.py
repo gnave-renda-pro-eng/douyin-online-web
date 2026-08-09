@@ -10,6 +10,11 @@ from flask import Flask, jsonify, request, send_from_directory
 import yt_dlp
 
 try:
+    from curl_cffi import requests as curl_requests
+except Exception:
+    curl_requests = None
+
+try:
     from yt_dlp.networking.impersonate import ImpersonateTarget
 except Exception:
     ImpersonateTarget = None
@@ -24,19 +29,26 @@ _cache_lock = threading.Lock()
 _extract_lock = threading.Lock()
 
 URL_RE = re.compile(r'https?://[^\s<>\"\']+', re.I)
+VIDEO_PATH_RE = re.compile(r'/video/(\d+)', re.I)
+NOTE_PATH_RE = re.compile(r'/note/(\d+)', re.I)
 ENV_COOKIE_FILE = '/tmp/douyin-env-cookies.txt'
 
 
-def _write_cookie_file(raw_cookie: str, path: str) -> bool:
+def _normalize_cookie(raw_cookie: str) -> str:
     raw = (raw_cookie or '').strip()
-    if not raw:
-        return False
     if raw.lower().startswith('cookie:'):
         raw = raw.split(':', 1)[1].strip()
+    return raw.replace('\r', '').replace('\n', '')
 
-    rows = ['# Netscape HTTP Cookie File', '# Generated in memory/request scope for Douyin extraction']
+
+def _write_cookie_file(raw_cookie: str, path: str) -> bool:
+    raw = _normalize_cookie(raw_cookie)
+    if not raw:
+        return False
+
+    rows = ['# Netscape HTTP Cookie File', '# Generated in request scope for Douyin extraction']
     count = 0
-    for part in raw.replace('\r', '').replace('\n', '').split(';'):
+    for part in raw.split(';'):
         part = part.strip()
         if not part or '=' not in part:
             continue
@@ -75,15 +87,73 @@ ENV_COOKIE_CONFIGURED = _prepare_env_cookie_file()
 ENV_USER_AGENT = (os.getenv('DOUYIN_USER_AGENT') or '').strip()
 
 
+def _is_douyin_host(host: str) -> bool:
+    host = (host or '').lower().split(':', 1)[0]
+    return host == 'douyin.com' or host.endswith('.douyin.com')
+
+
 def _clean_url(text: str) -> str:
     match = URL_RE.search(text or '')
     if not match:
         raise ValueError('未识别到抖音链接，请粘贴完整分享文案或链接。')
     url = match.group(0).rstrip('，。！？、；：)）]}')
-    host = (urlparse(url).hostname or '').lower()
-    if not (host == 'douyin.com' or host.endswith('.douyin.com')):
+    host = urlparse(url).hostname or ''
+    if not _is_douyin_host(host):
         raise ValueError('当前仅支持 douyin.com 的公开分享链接。')
     return url
+
+
+def _classify_url(url: str):
+    parsed = urlparse(url)
+    video_match = VIDEO_PATH_RE.search(parsed.path)
+    if video_match:
+        return 'video', video_match.group(1)
+    note_match = NOTE_PATH_RE.search(parsed.path)
+    if note_match:
+        return 'note', note_match.group(1)
+    return 'unknown', ''
+
+
+def _resolve_url(url: str, raw_cookie: str, user_agent: str):
+    """Resolve v.douyin.com share links before invoking yt-dlp.
+
+    This avoids sending /note/ URLs to an extractor that only accepts /video/ URLs.
+    Redirects are accepted only when they remain under douyin.com.
+    """
+    kind, content_id = _classify_url(url)
+    if kind != 'unknown':
+        return url, kind, content_id
+
+    if curl_requests is None:
+        return url, 'unknown', ''
+
+    headers = {
+        'User-Agent': user_agent or ENV_USER_AGENT or 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36',
+        'Referer': 'https://www.douyin.com/',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    }
+    normalized_cookie = _normalize_cookie(raw_cookie)
+    if normalized_cookie:
+        headers['Cookie'] = normalized_cookie
+
+    try:
+        response = curl_requests.get(
+            url,
+            headers=headers,
+            allow_redirects=True,
+            timeout=8,
+            impersonate='chrome',
+        )
+        final_url = str(response.url or url)
+    except Exception:
+        return url, 'unknown', ''
+
+    final_host = urlparse(final_url).hostname or ''
+    if not _is_douyin_host(final_host):
+        raise ValueError('抖音短链跳转到了非 douyin.com 地址，已停止解析。')
+
+    kind, content_id = _classify_url(final_url)
+    return final_url, kind, content_id
 
 
 def _pick_video_url(info):
@@ -159,6 +229,7 @@ def _extract_once(url: str, impersonate: bool, cookie_file: str | None, user_age
 
     return {
         'ok': True,
+        'content_type': 'video',
         'title': info.get('title') or info.get('description') or '',
         'author': info.get('uploader') or info.get('creator') or info.get('channel') or '',
         'cover': info.get('thumbnail') or '',
@@ -187,6 +258,8 @@ def _friendly_error(message: str, has_cookie: bool):
         if has_cookie:
             return '当前 Cookie 已过期或被抖音风控，请重新获取一份新鲜 Cookie 后再试。', 'cookie_expired'
         return '抖音当前要求新鲜 Cookie。展开“Cookie 设置”，粘贴浏览器里的 Cookie 后再试。', 'cookie_required'
+    if 'unsupported url' in lower and '/note/' in lower:
+        return '检测到的是抖音图文/笔记作品（/note/），不是标准视频作品，当前视频提取器不处理此类型。', 'content_not_video'
     if '403' in lower or 'forbidden' in lower:
         return '抖音拒绝了当前请求（403/风控）。请换一份新鲜 Cookie 后再试。', 'blocked'
     return message, 'extract_failed'
@@ -207,10 +280,12 @@ def health():
     return jsonify(
         ok=True,
         service='douyin-online-web',
-        version='3.6.0',
+        version='3.7.0',
         engine='flask-yt-dlp',
         cookie_configured=ENV_COOKIE_CONFIGURED,
         request_cookie_supported=True,
+        share_link_resolution=True,
+        content_type_detection=True,
         user_agent_configured=bool(ENV_USER_AGENT),
         ytdlp_version=getattr(yt_dlp.version, '__version__', 'unknown'),
     )
@@ -222,10 +297,33 @@ def parse_video():
     temp_cookie_file = None
     try:
         payload = request.get_json(silent=True) or {}
-        url = _clean_url(str(payload.get('text') or ''))
+        input_url = _clean_url(str(payload.get('text') or ''))
         request_cookie = str(payload.get('cookie') or '').strip()
         request_user_agent = str(payload.get('user_agent') or '').strip()
         user_agent = request_user_agent or ENV_USER_AGENT
+
+        resolved_url, content_type, content_id = _resolve_url(input_url, request_cookie, user_agent)
+
+        if content_type == 'note':
+            return jsonify(
+                ok=False,
+                error='检测到的是抖音图文/笔记作品，不是标准视频作品。当前“视频在线提取”只支持 /video/ 类型。',
+                error_code='content_not_video',
+                content_type='note',
+                content_id=content_id,
+                webpage_url=resolved_url,
+                elapsed=round(time.perf_counter() - started, 2),
+            ), 422
+
+        if content_type == 'unknown' and '/note/' in resolved_url:
+            return jsonify(
+                ok=False,
+                error='检测到的是抖音图文/笔记作品，当前视频提取器不支持此类型。',
+                error_code='content_not_video',
+                content_type='note',
+                webpage_url=resolved_url,
+                elapsed=round(time.perf_counter() - started, 2),
+            ), 422
 
         cookie_file = ENV_COOKIE_FILE if ENV_COOKIE_CONFIGURED else None
         if request_cookie:
@@ -237,7 +335,7 @@ def parse_video():
             cookie_file = temp_cookie_file
 
         has_cookie = bool(cookie_file)
-        key = _cache_key(url, request_cookie)
+        key = _cache_key(resolved_url, request_cookie)
         now = time.time()
 
         with _cache_lock:
@@ -258,10 +356,11 @@ def parse_video():
                     elapsed=round(time.perf_counter() - started, 2),
                 ), 422
 
-        result, mode = _extract_fast(url, cookie_file, user_agent)
+        result, mode = _extract_fast(resolved_url, cookie_file, user_agent)
         result['mode'] = mode
         result['cached'] = False
         result['cookie_used'] = has_cookie
+        result['resolved_url'] = resolved_url
         result['elapsed'] = round(time.perf_counter() - started, 2)
 
         with _cache_lock:
