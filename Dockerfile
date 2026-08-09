@@ -1,13 +1,12 @@
-FROM node:20-slim
-
-RUN apt-get update && apt-get install -y python3 python3-pip ffmpeg && \
-    pip3 install --break-system-packages yt-dlp && \
-    rm -rf /var/lib/apt/lists/*
+FROM python:3.12-slim
 
 WORKDIR /app
-COPY package.json ./
-RUN npm install
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
 COPY . .
 
 EXPOSE 3000
-CMD ["npm","start"]
+
+CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:3000", "app:app"]
