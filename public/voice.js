@@ -113,7 +113,7 @@ poet:{voiceName:'李白',voiceGender:'男性',voiceAge:'18岁',voiceRole:'唐代
 female:{voiceName:'李清照',voiceGender:'女性',voiceAge:'25岁',voiceRole:'北宋女词人',voiceState:'经历离别前的宁静时刻，把敏感与清醒藏在温柔之下',timbre:'温润清雅',texture:'柔和细腻',resonance:'口腔为主，胸腔支撑',languageStyle:'现代普通话，保留古典书卷气',speed:41,pitch:58,energy:35,breath:46,intimacy:72,express:24,mainEmotion:'温暖克制的怀念',distance:'人物内心独白'}
 };
 const VOICE_IDS=['voiceName','voiceGender','voiceAge','voiceRole','voiceState','timbre','texture','resonance','languageStyle','speed','pitch','energy','breath','intimacy','express','mainEmotion','distance','avoidVoice'];
-let targetLength=850;
+let targetLength=550;
 const voicePrompt=$('#voicePrompt');
 
 function degree(v,low,mid,high){v=Number(v);return v<34?low:v<67?mid:high}
