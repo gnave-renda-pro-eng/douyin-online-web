@@ -121,7 +121,7 @@ function exactLength(text,target){
   if(!target)return text;
   const chars=Array.from(text);
   if(chars.length===target)return text;
-  if(chars.length>target)return chars.slice(0,target-1).join('').replace(/[，、；：\s]+$/,'')+'。';
+  if(chars.length>target)return chars.slice(0,target-1).join('')+'。';
   const bank='补充要求：人物始终像真实演员自然开口，声音稳定、清楚、克制、可信；情绪从动机内部生长，不表演标签，不炫技，不抢文案；重要信息清晰，情感留有余地，结尾干净收住。';
   let out=text;
   while(Array.from(out).length<target){
