@@ -102,3 +102,106 @@ $('#clearDialogue').addEventListener('click',()=>{dialogueInput.value='';fullOut
 
 dialogueInput.addEventListener('input',()=>{if(fullOutput.value)buildFull()});
 selectEmotion(current);
+
+
+
+const VOICE_PRESETS={
+historian:{voiceName:'历史叙事者',voiceGender:'男性',voiceAge:'45—55岁',voiceRole:'历史纪录片叙事者',voiceState:'以当代视角回望人物一生，理解其选择与遗憾',timbre:'低沉厚重',texture:'厚实有颗粒感',resonance:'胸腔低位厚重',languageStyle:'标准普通话，纪实旁白感',speed:40,pitch:32,energy:48,breath:38,intimacy:56,express:30,mainEmotion:'清醒而深沉的遗憾',distance:'中近距离纪录片旁白'},
+warm:{voiceName:'温情讲述者',voiceGender:'男性',voiceAge:'35—45岁',voiceRole:'历史人物温情叙事旁白',voiceState:'像理解人物命运的旧友，讲述被宏大历史遮住的普通情感',timbre:'温润清雅',texture:'柔和细腻',resonance:'口腔为主，胸腔支撑',languageStyle:'自然口语，亲近克制',speed:36,pitch:42,energy:36,breath:50,intimacy:78,express:25,mainEmotion:'温暖克制的怀念',distance:'近距离耳语感，但吐字清楚'},
+strategist:{voiceName:'诸葛亮',voiceGender:'男性',voiceAge:'54岁',voiceRole:'蜀汉丞相、军师',voiceState:'北伐晚年，重病虚弱却仍牵挂军情与百姓',timbre:'中低音、清瘦沉稳',texture:'温润中带轻微疲惫感',resonance:'胸腔为主，口腔辅助',languageStyle:'现代普通话，保留古典书卷气',speed:38,pitch:35,energy:42,breath:58,intimacy:66,express:28,mainEmotion:'平静中的悲悯与不舍',distance:'人物内心独白'},
+poet:{voiceName:'李白',voiceGender:'男性',voiceAge:'18岁',voiceRole:'唐代少年诗人',voiceState:'初入长安，才华锋芒尚未被世事磨损',timbre:'清亮年轻',texture:'干净通透',resonance:'口腔为主，胸腔支撑',languageStyle:'古雅表达，但不使用戏腔',speed:58,pitch:62,energy:68,breath:34,intimacy:48,express:55,mainEmotion:'少年意气与自信',distance:'面向众人的正式叙述'},
+female:{voiceName:'李清照',voiceGender:'女性',voiceAge:'25岁',voiceRole:'北宋女词人',voiceState:'经历离别前的宁静时刻，把敏感与清醒藏在温柔之下',timbre:'温润清雅',texture:'柔和细腻',resonance:'口腔为主，胸腔支撑',languageStyle:'现代普通话，保留古典书卷气',speed:41,pitch:58,energy:35,breath:46,intimacy:72,express:24,mainEmotion:'温暖克制的怀念',distance:'人物内心独白'}
+};
+const VOICE_IDS=['voiceName','voiceGender','voiceAge','voiceRole','voiceState','timbre','texture','resonance','languageStyle','speed','pitch','energy','breath','intimacy','express','mainEmotion','distance','avoidVoice'];
+let targetLength=850;
+const voicePrompt=$('#voicePrompt');
+
+function degree(v,low,mid,high){v=Number(v);return v<34?low:v<67?mid:high}
+function exactLength(text,target){
+  if(!target)return text;
+  const chars=Array.from(text);
+  if(chars.length===target)return text;
+  if(chars.length>target)return chars.slice(0,target-1).join('').replace(/[，、；：\s]+$/,'')+'。';
+  const bank='补充要求：人物始终像真实演员自然开口，声音稳定、清楚、克制、可信；情绪从动机内部生长，不表演标签，不炫技，不抢文案；重要信息清晰，情感留有余地，结尾干净收住。';
+  let out=text;
+  while(Array.from(out).length<target){
+    const left=target-Array.from(out).length;
+    const piece=Array.from(bank).slice(0,left).join('');
+    out+=piece;
+  }
+  return out;
+}
+function buildVoicePrompt(){
+  const v=id=>$(`#${id}`).value.trim();
+  const speed=degree(v('speed'),'缓慢从容','中等自然','明快偏快');
+  const pitch=degree(v('pitch'),'偏低','中性','偏高');
+  const energy=degree(v('energy'),'内收低能量','稳定中能量','充沛高能量');
+  const breath=degree(v('breath'),'气息干净稳定','保留自然呼吸','气息感明显');
+  const intimacy=degree(v('intimacy'),'保持正式距离','中近距离讲述','贴近耳边的私密感');
+  const express=degree(v('express'),'高度克制','适度外露','明显外放');
+  const concise=`请设计一款用于抖音历史人物温情短视频的高品质中文音色。人物为${v('voiceName')}，${v('voiceGender')}，${v('voiceAge')}，身份是${v('voiceRole')}；当前处于${v('voiceState')}。基础声线采用${v('timbre')}，声音质感${v('texture')}，${v('resonance')}；整体音高${pitch}，语速${speed}，能量${energy}，${breath}，叙事距离呈现${intimacy}。普通话发音准确、清楚而不刻板，语言呈现${v('languageStyle')}。核心情绪是${v('mainEmotion')}，表达${express}；以人物动机推动声音变化，先有呼吸和思考，再自然落出台词。避免${v('avoidVoice')}。不要模仿名人，不要做成配音模板，确保人物辨识度、长段稳定性和真实演员感。`;
+  const extended=`${concise}
+
+【声音身份】听感年龄必须与${v('voiceAge')}一致，不刻意年轻化，也不靠粗糙沙哑制造年龄。声音要能体现${v('voiceRole')}长期形成的阅历、分寸与精神重量；音色核心是${v('timbre')}，底色${v('texture')}。共鸣采用${v('resonance')}，低频有支撑但不能轰鸣，中频完整清晰，高频柔和不过亮；保持自然喉位，不挤压、不端腔、不故意压低。
+
+【语言与咬字】使用${v('languageStyle')}。字头清楚但不颗粒化切割，字腹完整，字尾自然收住；避免每字同重、四平八稳和朗诵式抑扬。关键词通过极轻的时值与重音变化突出，不靠突然增大音量。长句按语义和人物思考组织停顿，短句利落，标点只作参考，不能机械逐句停顿。整体语速为${speed}，允许情绪转折处出现细微变速。
+
+【呼吸与距离】气息状态为${breath}，呼吸必须服务身体状态和潜台词；起句前可有极轻准备气，句中换气自然，不加入夸张喘息。录音距离呈现${v('distance')}，听感${intimacy}，声音贴近但不耳语化，保持手机外放下的清晰度。齿音、喷麦、口水音和鼻音均需控制，不做过度降噪后的塑料感。
+
+【情绪表演】主情绪为${v('mainEmotion')}，外放程度${express}。先明确人物为什么说，再让眼前对象和未说出口的话影响呼吸、停顿、重音与尾音。情绪应从平静底色中缓慢渗出，重要句前留出思考，真正刺痛人物的词略微放轻或短暂停住；不要从第一句就到情绪峰值。结尾收束，不煽情喊口号，给观众留下回味。
+
+【一致性与限制】整段保持同一人物、同一年龄和同一共鸣位置，不能越说越像播音员，不能忽高忽低或突然换声线。明确避免：${v('avoidVoice')}。同时禁止夸张戏剧腔、影视译制腔、营销感、虚假磁性、拖长尾音、连续气声、无意义颤音和每句都沉重。最终效果应像一位真实演员在安静环境中理解人物后自然讲述：有历史重量，也有人情温度；克制、可信、耐听，适合抖音前3秒抓住注意力，并能支撑60至180秒连续叙事。`;
+  return exactLength(targetLength?extended:concise,targetLength);
+}
+function updateQuality(){
+  const required=['voiceName','voiceAge','voiceRole','voiceState'];
+  const filled=required.filter(id=>$(`#${id}`).value.trim()).length;
+  const balance=100-Math.abs(Number($('#express').value)-32)/2;
+  const score=Math.round(70+filled*5+Math.min(10,balance/10));
+  $('#dnaScore').textContent=Math.min(99,score);
+  $('#scoreBar').style.width=`${Math.min(99,score)}%`;
+  $('#scoreText').textContent=score>=90?'优秀':score>=80?'良好':'待完善';
+  $('#meterResonance').textContent=$('#resonance').value.replace(/，.*/,'');
+  $('#meterAge').textContent=$('#voiceAge').value||'未设置';
+  $('#meterDistance').textContent=$('#distance').value.replace(/[，、].*/,'');
+  $('#qualityList').innerHTML=['身份辨识度','音色骨架完整','情绪边界明确','适配长段叙事','移动端清晰度','避免模板播音腔'].map(x=>`<span>${x}</span>`).join('');
+}
+function renderVoicePrompt(){
+  voicePrompt.value=buildVoicePrompt();
+  const count=Array.from(voicePrompt.value).length;
+  $('#charCount').textContent=count;
+  $('#charTarget').textContent=targetLength||'不限';
+  const exact=!targetLength||count===targetLength;
+  $('#charState').textContent=exact?(targetLength?'长度准确':'精炼模式'):'长度已变化';
+  $('#charState').className=exact?'ok':'warn';
+  ['speed','pitch','energy','breath','intimacy','express'].forEach(id=>$(`#${id}Val`).textContent=$(`#${id}`).value);
+  updateQuality();
+  try{localStorage.setItem('voiceDesignerState',JSON.stringify(Object.fromEntries(VOICE_IDS.map(id=>[id,$(`#${id}`).value]))))}catch{}
+}
+function applyVoicePreset(key){
+  const p=VOICE_PRESETS[key];if(!p)return;
+  Object.entries(p).forEach(([id,val])=>{const el=$(`#${id}`);if(el)el.value=val});
+  document.querySelectorAll('.preset').forEach(b=>b.classList.toggle('active',b.dataset.preset===key));
+  renderVoicePrompt();
+}
+function initWave(){
+  const heights=[24,46,72,38,84,55,31,68,92,62,42,78,51,27,64,89,48,35,73,58,29,67,81,44];
+  $('.wave').innerHTML=heights.map((h,i)=>`<i style="--h:${h}%;--d:${i*35}ms"></i>`).join('');
+}
+VOICE_IDS.forEach(id=>{const el=$(`#${id}`);if(el)el.addEventListener('input',renderVoicePrompt)});
+document.querySelectorAll('.preset').forEach(btn=>btn.addEventListener('click',()=>applyVoicePreset(btn.dataset.preset)));
+document.querySelectorAll('#lengthOptions button').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('#lengthOptions button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');targetLength=Number(btn.dataset.length);renderVoicePrompt();
+}));
+$('#heroStart').addEventListener('click',()=>$('#designer').scrollIntoView({behavior:'smooth'}));
+$('#loadZhuge').addEventListener('click',()=>{applyVoicePreset('strategist');$('#designer').scrollIntoView({behavior:'smooth'});showToast('已载入诸葛亮音色')});
+$('#resetVoice').addEventListener('click',()=>{applyVoicePreset('strategist');showToast('已恢复默认设置')});
+$('#copyVoicePrompt').addEventListener('click',()=>copyText(voicePrompt.value));
+$('#downloadVoicePrompt').addEventListener('click',()=>{
+  const blob=new Blob([voicePrompt.value],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`${$('#voiceName').value||'人物'}-MiniMax音色提示词.txt`;a.click();URL.revokeObjectURL(a.href);showToast('已下载提示词');
+});
+voicePrompt.addEventListener('input',()=>{
+  const count=Array.from(voicePrompt.value).length;$('#charCount').textContent=count;$('#charState').textContent=targetLength&&count!==targetLength?'手动编辑后长度变化':'长度准确';$('#charState').className=targetLength&&count!==targetLength?'warn':'ok';
+});
+try{const saved=JSON.parse(localStorage.getItem('voiceDesignerState')||'null');if(saved)Object.entries(saved).forEach(([id,val])=>{const el=$(`#${id}`);if(el)el.value=val})}catch{}
+initWave();renderVoicePrompt();
