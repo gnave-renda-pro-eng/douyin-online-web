@@ -39,6 +39,8 @@ FAIL_CACHE_TTL = 30
 ITEM_TTL = 1800
 MAX_MEDIA_BYTES = 90 * 1024 * 1024
 MAX_SUBTITLE_CHARS = 50000
+MAX_UPLOAD_VIDEO_BYTES = 200 * 1024 * 1024
+MAX_EXTRACTED_AUDIO_BYTES = 180 * 1024 * 1024
 
 _cache = {}
 _fail_cache = {}
@@ -46,6 +48,7 @@ _items = {}
 _text_cache = {}
 _cache_lock = threading.RLock()
 _extract_lock = threading.Lock()
+_audio_extract_lock = threading.Lock()
 
 URL_RE = re.compile(r'https?://[^\s<>\"\']+', re.I)
 VIDEO_PATH_RE = re.compile(r'/video/(\d+)', re.I)
@@ -502,6 +505,39 @@ def _extract_audio(video_path: str, audio_path: str):
         raise RuntimeError('音频提取失败：' + (proc.stderr[-300:] if proc.stderr else 'ffmpeg error'))
 
 
+def _uploaded_media_duration(path: str) -> float:
+    try:
+        proc = subprocess.run(
+            [
+                'ffprobe', '-v', 'error', '-show_entries', 'format=duration',
+                '-of', 'default=noprint_wrappers=1:nokey=1', path,
+            ],
+            capture_output=True, text=True, timeout=30,
+        )
+        if proc.returncode == 0:
+            return max(0.0, float((proc.stdout or '0').strip() or 0))
+    except Exception:
+        pass
+    return 0.0
+
+
+def _convert_uploaded_video_to_audio(source: str, destination: str, audio_format: str, bitrate: int):
+    common = ['ffmpeg', '-y', '-nostdin', '-loglevel', 'error', '-i', source, '-map', '0:a:0', '-vn', '-map_metadata', '-1']
+    if audio_format == 'mp3':
+        codec = ['-c:a', 'libmp3lame', '-b:a', f'{bitrate}k', '-ar', '44100']
+    elif audio_format == 'm4a':
+        codec = ['-c:a', 'aac', '-b:a', f'{bitrate}k', '-movflags', '+faststart']
+    else:
+        codec = ['-c:a', 'pcm_s16le', '-ar', '44100']
+    proc = subprocess.run(common + codec + [destination], capture_output=True, text=True, timeout=240)
+    if proc.returncode != 0 or not os.path.exists(destination) or os.path.getsize(destination) < 256:
+        detail = (proc.stderr or '').strip().splitlines()
+        last_line = detail[-1] if detail else '没有检测到可用音轨'
+        if 'matches no streams' in (proc.stderr or '').lower():
+            last_line = '视频中没有检测到可用音轨'
+        raise RuntimeError(last_line[-260:])
+
+
 def _transcribe_with_openai(item: dict):
     if not OPENAI_API_KEY or OpenAI is None:
         return ''
@@ -614,13 +650,15 @@ def health():
     return jsonify(
         ok=True,
         service='douyin-online-web',
-        version='4.1.0',
+        version='4.6.0',
         engine='flask-yt-dlp',
         cookie_configured=ENV_COOKIE_CONFIGURED,
         request_cookie_supported=True,
         share_link_resolution=True,
         content_type_detection=True,
         download_supported=True,
+        upload_audio_supported=True,
+        upload_audio_max_mb=MAX_UPLOAD_VIDEO_BYTES // (1024 * 1024),
         text_extract_supported=True,
         ai_analysis_supported=True,
         ai_configured=bool(OPENAI_API_KEY and OpenAI is not None),
@@ -628,6 +666,97 @@ def health():
         transcribe_model=OPENAI_TRANSCRIBE_MODEL if OPENAI_API_KEY else '',
         ytdlp_version=getattr(getattr(yt_dlp, 'version', None), '__version__', 'unknown'),
     )
+
+
+@app.post('/api/extract-audio')
+def extract_uploaded_audio():
+    started = time.perf_counter()
+    upload = request.files.get('video')
+    if not upload or not (upload.filename or '').strip():
+        return jsonify(ok=False, error='请先选择一个视频文件。', error_code='file_required'), 400
+
+    audio_format = str(request.form.get('format') or 'mp3').strip().lower()
+    if audio_format not in {'mp3', 'm4a', 'wav'}:
+        return jsonify(ok=False, error='不支持的音频格式。', error_code='invalid_format'), 400
+    try:
+        bitrate = int(request.form.get('bitrate') or 192)
+    except (TypeError, ValueError):
+        bitrate = 192
+    bitrate = bitrate if bitrate in {64, 96, 128, 192, 256, 320} else 192
+
+    original_name = Path(upload.filename).name
+    suffix = Path(original_name).suffix.lower()
+    allowed_video_suffixes = {'.mp4', '.mov', '.mkv', '.webm', '.avi', '.flv', '.m4v', '.mpeg', '.mpg', '.ts'}
+    mimetype = (upload.mimetype or '').lower()
+    if suffix not in allowed_video_suffixes and not mimetype.startswith('video/'):
+        return jsonify(ok=False, error='请选择 MP4、MOV、MKV、WebM、AVI 等常见视频文件。', error_code='invalid_file'), 415
+
+    work_dir = tempfile.mkdtemp(prefix='dy-upload-audio-')
+    source_path = os.path.join(work_dir, 'source' + (suffix if suffix in allowed_video_suffixes else '.mp4'))
+    output_path = os.path.join(work_dir, 'audio.' + audio_format)
+    try:
+        total = 0
+        with open(source_path, 'wb') as target:
+            while True:
+                chunk = upload.stream.read(1024 * 1024)
+                if not chunk:
+                    break
+                total += len(chunk)
+                if total > MAX_UPLOAD_VIDEO_BYTES:
+                    raise ValueError('视频超过 200MB，请压缩后再上传。')
+                target.write(chunk)
+        if total < 1024:
+            raise ValueError('视频文件为空或已损坏，请重新选择。')
+
+        if not _audio_extract_lock.acquire(blocking=False):
+            shutil.rmtree(work_dir, ignore_errors=True)
+            return jsonify(ok=False, error='服务器正在处理另一个音频，请稍后再试。', error_code='extract_busy'), 429
+        try:
+            duration = _uploaded_media_duration(source_path)
+            _convert_uploaded_video_to_audio(source_path, output_path, audio_format, bitrate)
+        finally:
+            _audio_extract_lock.release()
+        output_size = os.path.getsize(output_path)
+        if output_size > MAX_EXTRACTED_AUDIO_BYTES:
+            raise ValueError('提取后的音频超过 180MB，请改用 MP3/M4A 或降低音质。')
+
+        stem = re.sub(r'[\\/:*?"<>|\r\n]+', '_', Path(original_name).stem).strip(' ._')[:80] or '提取音频'
+        download_name = f'{stem}-音频.{audio_format}'
+        encoded_name = quote(download_name)
+        mimetypes = {'mp3': 'audio/mpeg', 'm4a': 'audio/mp4', 'wav': 'audio/wav'}
+
+        def file_gen():
+            try:
+                with open(output_path, 'rb') as audio_file:
+                    while True:
+                        chunk = audio_file.read(256 * 1024)
+                        if not chunk:
+                            break
+                        yield chunk
+            finally:
+                shutil.rmtree(work_dir, ignore_errors=True)
+
+        return Response(
+            stream_with_context(file_gen()),
+            headers={
+                'Content-Type': mimetypes[audio_format],
+                'Content-Length': str(output_size),
+                'Content-Disposition': f"attachment; filename*=UTF-8''{encoded_name}",
+                'Cache-Control': 'no-store',
+                'X-Audio-Filename': encoded_name,
+                'X-Audio-Duration': f'{duration:.2f}',
+                'X-Elapsed-Seconds': f'{time.perf_counter() - started:.2f}',
+            },
+        )
+    except ValueError as exc:
+        shutil.rmtree(work_dir, ignore_errors=True)
+        return jsonify(ok=False, error=str(exc), error_code='upload_limit'), 413
+    except subprocess.TimeoutExpired:
+        shutil.rmtree(work_dir, ignore_errors=True)
+        return jsonify(ok=False, error='音频提取超时，请缩短或压缩视频后重试。', error_code='extract_timeout'), 422
+    except Exception as exc:
+        shutil.rmtree(work_dir, ignore_errors=True)
+        return jsonify(ok=False, error='音频提取失败：' + (str(exc).strip() or '无法读取视频音轨'), error_code='extract_failed'), 422
 
 
 @app.post('/api/parse')
