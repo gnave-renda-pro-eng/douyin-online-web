@@ -26,7 +26,7 @@ def _friendly_key_error(exc):
     return 'AI Key 验证失败：' + msg, 'key_test_failed', 422
 
 
-def _health_payload(version='4.5.0'):
+def _health_payload(version='4.6.0'):
     return dict(
         ok=True,
         version=version,
@@ -36,6 +36,8 @@ def _health_payload(version='4.5.0'):
         api_key_test_supported=True,
         env_ai_configured=bool(enhanced.core.OPENAI_API_KEY and OpenAI is not None),
         analysis_supported=True,
+        upload_audio_supported=True,
+        upload_audio_max_mb=enhanced.core.MAX_UPLOAD_VIDEO_BYTES // (1024 * 1024),
         chunked_transcription=True,
         transcribe_chunk_seconds=enhanced.TRANSCRIBE_CHUNK_SECONDS,
         transcribe_model=enhanced.core.OPENAI_TRANSCRIBE_MODEL,
